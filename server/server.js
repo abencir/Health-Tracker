@@ -1,20 +1,33 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import dotenv from 'dotenv';
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require('cors')
+const entryRoutes = require('./routes/entries.js');
+const statsRoutes = require ('./routes/states.js');
 
 dotenv.config();
-const app = express();
-app.use(cors());
-app.use(express.json())
 
-console.log('Mongo URI:', process.env.URI_MONGO);
-mongoose.connect(process.env.URI_MONGO)
-.then (() => {
-    console.log('Conected to database is success')
-}).catch((err)=>{
-    console.log('DB Connection error:', err)
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+const PORT = process.env.PORT || 5000;
+const DB_URI = process.env.DB_URI;
+
+mongoose.connect(DB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
-app.listen('5000', () => {
-    console.log('Server running on port 5000')
-})
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.error("Failed to connect to MongoDB", error));
+
+app.get("/", (req, res) => {
+  res.send("Hello from FitTracker API!");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+app.use('/api/entries', entryRoutes);
+app.use('/api/stats', statsRoutes);
