@@ -1,22 +1,22 @@
 const express = require("express");
 const Entry = require("../models/entry");
+const verifyToken = require('../middleware/verifyToken'); // استيراد الميدلوير
 const router = express.Router();
 
-
-router.get("/", async (req, res) => {
+// حماية المسارات باستخدام verifyToken
+router.get("/", verifyToken, async (req, res) => {
   try {
-    const entries = await Entry.find().sort({ createdAt: -1 });
+    const entries = await Entry.find({ userId: req.userId }).sort({ createdAt: -1 });
     res.json(entries);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, async (req, res) => {
   try {
     const { sleep, meals, workout, duration } = req.body;
-    const newEntry = new Entry({ sleep, meals, workout, duration });
+    const newEntry = new Entry({ sleep, meals, workout, duration, userId: req.userId });
     await newEntry.save();
     res.status(201).json(newEntry);
   } catch (error) {
@@ -24,11 +24,15 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyToken, async (req, res) => {
   try {
-    const updatedEntry = await Entry.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedEntry = await Entry.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId }, // التأكد من أن المستخدم هو الذي يملك السجل
+      req.body,
+      { new: true }
+    );
     if (!updatedEntry) {
-      return res.status(404).json({ message: "Entry not found" });
+      return res.status(404).json({ message: "Entry not found or not authorized" });
     }
     res.json(updatedEntry);
   } catch (error) {
@@ -36,12 +40,13 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
   try {
-    const deletedEntry = await Entry.findByIdAndDelete(req.params.id);
+    const deletedEntry = await Entry.findOneAndDelete(
+      { _id: req.params.id, userId: req.userId } // التأكد من أن المستخدم هو الذي يملك السجل
+    );
     if (!deletedEntry) {
-      return res.status(404).json({ message: "Entry not found" });
+      return res.status(404).json({ message: "Entry not found or not authorized" });
     }
     res.status(200).json({ message: "Entry deleted successfully" });
   } catch (error) {

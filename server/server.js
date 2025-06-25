@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const cors = require('cors')
 const entryRoutes = require('./routes/entries.js');
 const statsRoutes = require ('./routes/states.js');
+const authRoutes = require('./routes/auth.js')
 
 dotenv.config();
 
@@ -31,3 +32,4 @@ app.listen(PORT, () => {
 
 app.use('/api/entries', entryRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/auth', authRoutes);

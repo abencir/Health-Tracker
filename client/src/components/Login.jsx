@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
@@ -10,48 +11,40 @@ const Login = () => {
           </h3>
         </div>
         <form className="mt-8 space-y-6" action="#" method="POST">
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                required
-                className="appearance-none relative block w-full px-3 py-3 border border-[#3e8e41] rounded-lg placeholder-gray-400 focus:outline-none focus:ring-[#3e8e41] focus:border-[#3e8e41] focus:z-10 sm:text-s"
-                placeholder="Email"
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                name="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none relative block w-full px-3 py-3 border border-[#3e8e41] rounded-lg placeholder-gray-400 focus:outline-none focus:ring-[#3e8e41] focus:border-[#3e8e41] focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
+          <div className="space-y-4">
+            <input
+              type="email"
+              name="email"
+              autoComplete="email"
+              required
+              className="w-full px-3 py-3 border border-[#3e8e41] rounded-lg placeholder-gray-400 focus:outline-none focus:ring-[#3e8e41]"
+              placeholder="Email"
+            />
+            <input
+              type="password"
+              name="password"
+              autoComplete="current-password"
+              required
+              className="w-full px-3 py-3 border border-[#3e8e41] rounded-lg placeholder-gray-400 focus:outline-none focus:ring-[#3e8e41]"
+              placeholder="Password"
+            />
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-[#3e8e41] hover:text-[#2a6f29]"
-              >
-                Forgot password?
-              </a>
-            </div>
+          <div className="flex items-center justify-between text-sm">
+            <Link to="/register" className="text-[#3e8e41] hover:underline">
+              Create an account
+            </Link>
+            <a href="#" className="text-[#3e8e41] hover:underline">
+              Forgot password?
+            </a>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#3e8e41] hover:bg-[#2a6f29] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3e8e41]"
-            >
-              Log in
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full py-3 px-4 bg-[#3e8e41] hover:bg-[#2a6f29] text-white rounded-lg"
+          >
+            Log in
+          </button>
         </form>
       </div>
     </div>

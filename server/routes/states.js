@@ -1,17 +1,19 @@
 const express = require("express");
 const Entry = require("../models/entry");
+const verifyToken = require('../middleware/verifyToken'); // استيراد الميدلوير
 const router = express.Router();
 
-// مسار لحساب الإحصائيات
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
-    // حساب الإحصائيات باستخدام aggregation
     const stats = await Entry.aggregate([
       {
+        $match: { userId: req.userId }, // التأكد من إحصائيات المستخدم الحالي
+      },
+      {
         $project: {
-          sleep: { $toDouble: "$sleep" },  // تحويل ساعات النوم إلى عدد
-          duration: { $toDouble: "$duration" },  // تحويل مدة التمرين إلى عدد
-          meals: { $cond: [{ $ne: ["$meals", ""] }, 1, 0] }, // التحقق إذا كانت الوجبة موجودة
+          sleep: { $toDouble: "$sleep" },
+          duration: { $toDouble: "$duration" },
+          meals: { $cond: [{ $ne: ["$meals", ""] }, 1, 0] },
         },
       },
       {
